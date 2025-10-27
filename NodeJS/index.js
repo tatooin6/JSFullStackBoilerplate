@@ -32,7 +32,7 @@ app.delete("/user/:id", (req, res) => {
     const current = readDB();
     const filtered = current.filter((item) => item.id !== Number(removedItemId));
     replaceDB(filtered);
-    res.json({ status: "success", removed: removedItemId });
+    res.json({ status: "success", removed: removedItemId, current: filtered });
   } catch (err) {
     console.error("something went wrong", err);
     res.json({ status: "failed", sentId: removedItemId });

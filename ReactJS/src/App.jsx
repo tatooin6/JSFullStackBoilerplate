@@ -4,15 +4,16 @@ import "./App.css";
 
 function App() {
   useEffect(() => {
-    const getUsers = async () => {
-      const response = await axios.get("http://localhost:3000/users");
-      setUsers(response.data);
-    };
     getUsers();
   }, []);
   const [users, setUsers] = useState([]);
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
+
+  const getUsers = async () => {
+    const response = await axios.get("http://localhost:3000/users");
+    setUsers(response.data);
+  };
 
   const handleSubmitNewUser = async () => {
     const url = 'http://localhost:3000/users';
@@ -23,10 +24,25 @@ function App() {
         body: JSON.stringify({name: userName, email})
       });
       console.log(response);
+      await getUsers();
     } catch (err) {
       console.error('Unexpected error: ', err);
     }
   }
+
+  const handleRemoveItem = async (itemId) => {
+    try {
+    const url = 'http://localhost:3000/user';
+      const response = await fetch(`${url}/${itemId}`, {
+        method: 'DELETE',
+        headers: {'Content-Type': 'application/json'},
+      });
+      const data = await response.json();
+      setUsers(data.current);
+    } catch (err) {
+      console.error('Unexpected error: ', err);
+    }
+  } 
 
   return (
     <>
@@ -43,7 +59,10 @@ function App() {
         <ul>
           {
             users.map((user, index) => (
-              <li key={index}>{user.name}</li>
+              <li key={index}>
+                {user.name}
+                <button onClick={() => handleRemoveItem(user.id)}>delete</button>
+              </li>
             ))
           }
         </ul>
