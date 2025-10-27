@@ -38,7 +38,7 @@ function App() {
           <br/>
           <label htmlFor="email">Email</label>
           <input type="text" name="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <button onClick={handleSubmitNewUser}></button>
+          <button onClick={handleSubmitNewUser}>Submit</button>
         </div> 
         <ul>
           {
