@@ -26,15 +26,32 @@ app.post("/users", (req, res) => {
     res.json({ status: "failed", sent: requestData });
   }
 });
+app.delete("/user/:id", (req, res) => {
+  const removedItemId = req.params.id;
+  try {
+    const current = readDB();
+    const filtered = current.filter((item) => item.id !== Number(removedItemId));
+    replaceDB(filtered);
+    res.json({ status: "success", removed: removedItemId });
+  } catch (err) {
+    console.error("something went wrong", err);
+    res.json({ status: "failed", sentId: removedItemId });
+  }
+})
 // G
 function readDB() {
   const data = fs.readFileSync("./db.json");
   return JSON.parse(data);
 }
 
+
 function writeDB(data) {
   const former = readDB();
-  fs.writeFileSync("./db.json", JSON.stringify([...former, data], 2, null));
+  const id = former.length + 1;
+  fs.writeFileSync("./db.json", JSON.stringify([...former, { id, ...data }], 2, null));
+}
+function replaceDB(data) {
+  fs.writeFileSync("./db.json", JSON.stringify(data, 2, null));
 }
 // A
 app.listen(PORT, () => {
